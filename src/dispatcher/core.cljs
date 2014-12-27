@@ -6,10 +6,7 @@
 
 
 (def ^:private ch (chan))
-
-(def actions
-  "The mult(iplication) of actions channel"
-  (mult ch))
+(def ^:private actions-mult (mult ch))
 
 (defn dispatch
   "Put the action in the actions channel"
@@ -21,13 +18,13 @@
   "Gets a function, which will be called with the recieved actions.
   The function should return a channel with the result of process.
   Returns a channel, which will be filled with the processed actions."
-  [responder]
+  [<responder]
   (let [actions-ch (chan)
         done-ch    (chan)]
-    (tap actions actions-ch)
+    (tap actions-mult actions-ch)
     (go-loop []
              (let [action (<! actions-ch)
-                   result (<! (responder action))]
+                   result (<! (apply <responder action))]
                (>! done-ch [action result]))
              (recur))
     done-ch))

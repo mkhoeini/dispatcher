@@ -1,11 +1,14 @@
-# dispatcher
+= dispatcher
+:toc: macro
 
-A Clojurescript message dispatcher for a [flux](https://facebook.github.io/flux/) based architecture.
+toc::[]
 
-## Usage
+A Clojurescript message dispatcher for a link:https://facebook.github.io/flux/[flux] based architecture.
+
+== Usage
 
 First you need to define your actions. For this, use the `defaction` macro. `defaction` uses
-[Prismatic/schema](https://github.com/Prismatic/schema) to define and validate the action.
+link:https://github.com/Prismatic/schema[Prismatic/schema] to define and validate the action.
 
 ```clojure
 (defaction some-action
@@ -36,3 +39,15 @@ with every recieved action, and it will need to return a channel which will even
 with the result of process. And `process` returns a channel that will contain the results of processed actions.
 The shape of result is a vector with first element being the vector of action itself and secend element the
 resolved result from the `<action-processor`.
+
+
+== Further Ideas
+
+* Invert the control flow.
+  Instead of saying `(process <action-processor)` and sending all the actions to it and leaving dependency management to action processors themselves, we can invert the control flow by saying:
+```clojure
+(process
+  :action1 [<action-processor1 <action-processor2]
+  :action2 []
+  ...)
+```
